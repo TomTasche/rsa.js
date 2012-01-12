@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>RSAria</title>
+        
+        <script src="javascript-biginteger/biginteger.js"></script>
+        <script src="math.js"></script>
+        <script src="rsa.js" defer="defer"></script>
+    </head>
+    
+    <body>
+        <form id="rsa" onsubmit="calculate(); return false;">
+            <h3>Prerequisites</h3>
+            Enter two primes, p and q. You can find a list of primes <a target="blank" href="http://primes.utm.edu/lists/small/10000.txt">here</a>.
+            <br />
+            <input type="text" id="p" />
+            <input type="text" id="q" />
+            
+            <input type="submit" />
+            
+            <h3>Calculation</h3>
+        </form>
+    </body>
+</html>
