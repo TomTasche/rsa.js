@@ -15,6 +15,44 @@ var uncalculate = function uncalculate() {
     unRSA(e, n);
 };
 
+var calculateGrouptable = function calculateGrouptable(tau, phi) {
+    var table = [];
+    var potentialKeys = [];
+    
+    for (var i = 1; i < tau.length; i++) {
+        var row = [];
+        
+        for (var j = i + 1; j < tau.length; j++) {
+            var entry = tau[i] * tau[j] % phi;
+            if (entry === 1) {
+                potentialKeys.push([tau[i], tau[j]]);
+            }
+            
+            row[j] = entry;
+        }
+        
+        table[i] = row;
+    }
+    
+    return potentialKeys;
+}
+
+var calculateTau = function calculateTau(phi) {
+    var classes = [];
+    
+    for (var i = 1; i < phi; i++) {
+        if (Mathematix.isCoprime(i, phi)) {
+            classes.push(i);
+        }
+    }
+    
+    return classes;
+}
+
+function decrypt(c, d, n) {
+    return BigInteger(c).modPow(BigInteger(d), BigInteger(n));
+}
+
 var RSA = function RSA(p, q) {
     if (Math.min(p, q) < 5 && Math.max(p, q) < 11) {
         window.alert('Please input Math.min(p, q) >= 5 && Math.max(p, q) >= 11');
@@ -30,46 +68,16 @@ var RSA = function RSA(p, q) {
     var phi = Mathematix.phi(p, q);
     log('phi: ' + phi);
     
-    var tau = function calculateTau(phi) {
-        var classes = [];
-        
-        for (var i = 1; i < phi; i++) {
-            if (Mathematix.isCoprime(i, phi)) {
-                classes.push(i);
-            }
-        }
-        
-        return classes;
-    }(phi);
+    var tau = calculateTau(phi);
     log('tau: ' + tau);
     
     var keys = function calculateKeys(tau, phi) {
-        var potentialKeys = function calculateGrouptable() {
-            var table = [];
-            var potentialKeys = [];
-            
-            for (var i = 1; i < tau.length; i++) {
-                var row = [];
-                
-                for (var j = i + 1; j < tau.length; j++) {
-                    var entry = tau[i] * tau[j] % phi;
-                    if (entry === 1) {
-                        potentialKeys.push([tau[i], tau[j]]);
-                    }
-                    
-                    row[j] = entry;
-                }
-                
-                table[i] = row;
-            }
-            
-            return potentialKeys;
-        }();
+        var potentialKeys = calculateGroupTable(tau, phi);
         log('potential keys: ' + potentialKeys);
         
-        var keys = potentialKeys.length === 0 ? [] : potentialKeys[potentialKeys.length - 1];
+        var keys = potentialKeys[potentialKeys.length - 1];
         if (keys[0] === 1 && keys[1] === 1) {
-            return [];
+            log('no possible keys found');
         } else {
             return keys;
         }
@@ -78,50 +86,39 @@ var RSA = function RSA(p, q) {
     
     var e = Math.min(keys[0], keys[1]);
     var d = Math.max(keys[0], keys[1]);
-    log('public: ' + e);
-    log('private: ' + d);
+    log('public keys: ' + e);
+    log('private keys: ' + d);
     
     var m = 4;
-    log('plain: ' + m);
+    log('plain text: ' + m);
     
     var c = function encrypt(m, e, n) {
         return BigInteger(m).modPow(BigInteger(e), BigInteger(n));
     }(m, e, n);
-    log('encrypted: ' + c);
+    log('encrypted text: ' + c);
     
-    var mAgain = function decrypt(c, d, n) {
-        return BigInteger(c).modPow(BigInteger(d), BigInteger(n));
-    }(c, d, n);
+    var mAgain = decrypt(c, d, n);
     
-    log('decrypted: ' + mAgain);
-    
-    unRSA(d, n);
+    log('decrypted text: ' + mAgain);
 };
 
-var unRSA = function unRSA(d, n) {
+var unRSA = function unRSA(e, n, c) {
     var factors = Mathematix.primFactorize(n);
-    log('<h3>Crackeria</h3>');
+    log('<h3>Cracking RSA</h3>');
     log('factors of n: ' + factors);
     
     var phi = Mathematix.phi(factors[0], factors[1]);
     log('cracked phi: ' + phi);
     
-    // http://de.wikipedia.org/wiki/Erweiterter_euklidischer_Algorithmus#Rekursive_Variante
-    // d*u + phi*v = 1
-    // 33*u + 40*v = 1 // mod 40
-    // 33*u = 1 mod 40
-    // // 40 = 33*1 + 7
-    // // // 7 = 40 - 33*1
-    // // 33 = 7*4 + 5
-    // // // 5 = 33 - 7*4
-    // // 7 = 5*1 + 2
-    // // // 2 = 7 - 5*1
-    // // 5 = 2*2 + 1
-    // // // 1 = 5 - 2*2
-    // // (2 = 1*2 + 0)
-    // // // (0 = 2 - 1*2)
-    // // 1 = (33 - (40 - 33*1)*4) - ((40 - 33*1 - (33 - (40 - 33*1)*4)*1) // ?
-    // // 1 = 33 - 28 - 40 + 33 + 28 // mod 40
-    // // 1 = 33 - 28 + 33 + 28
-    // // 1 = ?
+    var potentialkeys = calculateGroupTable(tau, phi);
+    var d;
+    for (var i = 0; i < potentialKeys.length; i++) {
+        if (potentialKeys[i][0] == e) {
+            d = potentialKeys[i][1];
+        }
+    }
+    
+    log('cracked d: ' + d);
+    
+    log('cracked text: ' + decrypt(c, d, n))
 };
