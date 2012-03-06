@@ -59,7 +59,7 @@ var RSA = function RSA(p, q) {
     log('tau: ' + tau);
     
     var keys = function calculateKeys(tau, phi) {
-        var potentialKeys = calculateGroupTable(tau, phi);
+        var potentialKeys = calculateGrouptable(tau, phi);
         log('potential keys: ' + potentialKeys);
         
         var keys = potentialKeys[potentialKeys.length - 1];
@@ -97,7 +97,9 @@ var unRSA = function unRSA(e, n, c) {
     var phi = Mathematix.phi(factors[0], factors[1]);
     log('cracked phi: ' + phi);
     
-    var potentialkeys = calculateGroupTable(tau, phi);
+    var tau = calculateTau(phi);
+    
+    var potentialKeys = calculateGrouptable(tau, phi);
     var d;
     for (var i = 0; i < potentialKeys.length; i++) {
         if (potentialKeys[i][0] == e) {
@@ -107,5 +109,5 @@ var unRSA = function unRSA(e, n, c) {
     
     log('cracked d: ' + d);
     
-    log('cracked text: ' + decrypt(c, d, n))
+    log('cracked text: ' + decrypt(c, d, n));
 };
