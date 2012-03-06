@@ -2,19 +2,6 @@ var log = function log(message) {
     document.body.innerHTML += (message + '<br />');
 };
 
-var calculate = function calculate() {
-    var p = document.getElementById('p').value;
-    var q = document.getElementById('q').value;
-    
-    RSA(p, q);
-};
-
-var uncalculate = function uncalculate() {
-    // TODO: where to get e and n from?
-    
-    unRSA(e, n);
-};
-
 var calculateGrouptable = function calculateGrouptable(tau, phi) {
     var table = [];
     var potentialKeys = [];
