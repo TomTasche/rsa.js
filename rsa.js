@@ -87,6 +87,8 @@ var RSA = function RSA(p, q) {
     var mAgain = decrypt(c, d, n);
     
     log('decrypted text: ' + mAgain);
+
+    unRSA(e, n, c);
 };
 
 var unRSA = function unRSA(e, n, c) {
