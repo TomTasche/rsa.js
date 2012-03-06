@@ -106,6 +106,7 @@ var unRSA = function unRSA(d, n) {
     var phi = Mathematix.phi(factors[0], factors[1]);
     log('cracked phi: ' + phi);
     
+    // http://de.wikipedia.org/wiki/Erweiterter_euklidischer_Algorithmus#Rekursive_Variante
     // d*u + phi*v = 1
     // 33*u + 40*v = 1 // mod 40
     // 33*u = 1 mod 40
