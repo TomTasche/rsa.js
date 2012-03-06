@@ -7,6 +7,20 @@
         <script src="javascript-biginteger/biginteger.js"></script>
         <script src="math.js"></script>
         <script src="rsa.js" defer="defer"></script>
+        <script>
+            var calculate = function calculate() {
+                var p = document.getElementById('p').value;
+                var q = document.getElementById('q').value;
+    
+                RSA(p, q);
+            };
+
+            var uncalculate = function uncalculate() {
+                // TODO: where to get e and n from?
+    
+                unRSA(e, n);
+            };
+        </script>
     </head>
     
     <body>
