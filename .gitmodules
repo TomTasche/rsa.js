@@ -1,0 +1,3 @@
+[submodule "javascript-biginteger"]
+    path = javascript-biginteger
+    url = https://github.com/silentmatt/javascript-biginteger
