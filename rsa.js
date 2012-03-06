@@ -73,8 +73,8 @@ var RSA = function RSA(p, q) {
     
     var e = Math.min(keys[0], keys[1]);
     var d = Math.max(keys[0], keys[1]);
-    log('public keys: ' + e);
-    log('private keys: ' + d);
+    log('public key: ' + e);
+    log('private key: ' + d);
     
     var m = 4;
     log('plain text: ' + m);
